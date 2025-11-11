@@ -41,13 +41,8 @@ struct VNM{vns,N<:NamedTuple}
     # are we constructing things? if we keep the constructor out
     # of performance-sensitive loops i think it's OK?
     function VNM(vns_to_vals::AbstractDict{<:VN,<:Any})
-        n = NamedTuple()
-        vns = ()
-        for (i, (k, v)) in enumerate(vns_to_vals)
-            s = Symbol(:vn, i)
-            n = merge(n, (s => v,))
-            vns = (vns..., k)
-        end
+        vns = tuple(keys(vns_to_vals)...)
+        n = NamedTuple(Symbol(:vn, i) => v for (i, v) in enumerate(values(vns_to_vals)))
         return new{vns,typeof(n)}(n)
     end
 end
@@ -57,7 +52,7 @@ end
 Base.@constprop :aggressive @inline @generated function Base.getindex(vnm::VNM{vns}, t::T) where {vns,T<:VN}
     for (i, vn) in enumerate(vns)
         if typeof(vn) == T
-            return :(vnm.nt.[$i])
+            return :(vnm.nt[$i])
         end
     end
     throw(KeyError(t))
@@ -68,6 +63,7 @@ function demo()
     @testset "EnamRav" begin
         d = Dict(@vn(x) => 1.0, @vn(y[1]) => zeros(3), @vn(z.a) => "hello")
         vnm = VNM(d)
+        @show vnm
 
         @testset "$k" for (k, v) in d
             println()
