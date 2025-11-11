@@ -1,0 +1,12 @@
+name = "EnamRav"
+uuid = "b512413d-cef4-4bf4-9e5e-a0f448290f0e"
+authors = ["Penelope Yong <penelopeysm@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+Chairmarks = "0ca39b1e-fe0b-4e98-acfc-b1656634c4de"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[compat]
+Chairmarks = "1.3.1"
+Test = "1.11.0"
